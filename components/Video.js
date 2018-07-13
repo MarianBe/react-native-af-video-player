@@ -421,6 +421,7 @@ class Video extends Component {
           onMorePress={() => onMorePress()}
           theme={setTheme}
           inlineOnly={inlineOnly}
+          noControls={this.props.noControls}
         />
       </Animated.View>
     )
@@ -471,7 +472,8 @@ Video.propTypes = {
   logo: PropTypes.string,
   title: PropTypes.string,
   theme: PropTypes.object,
-  resizeMode: PropTypes.string
+  resizeMode: PropTypes.string,
+  noControls: PropTypes.bool
 }
 
 Video.defaultProps = {
@@ -500,7 +502,8 @@ Video.defaultProps = {
   logo: undefined,
   title: '',
   theme: defaultTheme,
-  resizeMode: 'contain'
+  resizeMode: 'contain',
+  noControls: false
 }
 
 export default Video
