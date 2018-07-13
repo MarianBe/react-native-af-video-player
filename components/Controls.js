@@ -99,7 +99,7 @@ class Controls extends Component {
     return (
       <Touchable style={styles.container} onPress={() => this.showControls()}>
         <Animated.View style={[styles.container, { paddingBottom: this.progressbar }]}>
-          <ProgressBar theme={this.props.theme.progress} progress={this.props.progress} />
+          {!this.props.noControls && <ProgressBar theme={this.props.theme.progress} progress={this.props.progress} />}
         </Animated.View>
       </Touchable>
     )
@@ -135,20 +135,20 @@ class Controls extends Component {
     return (
       <Touchable onPress={() => this.hideControls()}>
         <Animated.View style={[styles.container, { opacity: this.animControls }]}>
-          <TopBar
+        {!this.props.noControls && <TopBar
             title={title}
             logo={logo}
             more={more}
             onMorePress={() => onMorePress()}
             theme={{ title: theme.title, more: theme.more }}
-          />
+          />}
           <Animated.View style={[styles.flex, { transform: [{ scale: this.scale }] }]}>
-            <PlayButton
+          {!this.props.noControls && <PlayButton
               onPress={() => this.props.togglePlay()}
               paused={paused}
               loading={loading}
               theme={center}
-            />
+            />}
           </Animated.View>
           <ControlBar
             toggleFS={() => this.props.toggleFS()}
@@ -164,6 +164,7 @@ class Controls extends Component {
             duration={duration}
             theme={controlBar}
             inlineOnly={inlineOnly}
+            noControls={this.props.noControls}
           />
         </Animated.View>
       </Touchable>
@@ -197,7 +198,8 @@ Controls.propTypes = {
   duration: PropTypes.number.isRequired,
   title: PropTypes.string.isRequired,
   logo: PropTypes.string,
-  theme: PropTypes.object.isRequired
+  theme: PropTypes.object.isRequired,
+  noControls: PropTypes.bool.isRequired
 }
 
 export { Controls }
