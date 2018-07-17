@@ -67,7 +67,7 @@ class Video extends Component {
       renderError: false
     }
     this.animInline = new Animated.Value(Win.width * this.props.lockRatio)
-    this.animFullscreen = new Animated.Value(Win.width * 0.5625)
+    this.animFullscreen = new Animated.Value(Win.width * this.props.lockRatio)
     this.BackHandler = this.BackHandler.bind(this)
     this.onRotated = this.onRotated.bind(this)
   }
