@@ -57,8 +57,8 @@ class Video extends Component {
     this.state = {
       paused: !props.autoPlay,
       muted: false,
-      fullScreen: false,
-      inlineHeight: Win.width * 0.5625,
+      fullScreen: false, 
+      inlineHeight: Win.width / this.props.lockRatio,
       loading: false,
       duration: 0,
       progress: 0,
@@ -66,8 +66,8 @@ class Video extends Component {
       seeking: false,
       renderError: false
     }
-    this.animInline = new Animated.Value(Win.width * this.props.lockRatio)
-    this.animFullscreen = new Animated.Value(Win.width * this.props.lockRatio)
+    this.animInline = new Animated.Value(Win.width / this.props.lockRatio)
+    this.animFullscreen = new Animated.Value(Win.width / this.props.lockRatio)
     this.BackHandler = this.BackHandler.bind(this)
     this.onRotated = this.onRotated.bind(this)
   }
@@ -498,7 +498,7 @@ Video.defaultProps = {
   onTimedMetadata: () => {},
   rate: 1,
   volume: 1,
-  lockRatio: undefined,
+  lockRatio: 1.7777,
   logo: undefined,
   title: '',
   theme: defaultTheme,
