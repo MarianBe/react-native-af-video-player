@@ -56,7 +56,7 @@ class AFVideo extends Component {
     super(props)
     this.state = {
       paused: !props.autoPlay,
-      muted: true,
+      muted: false,
       fullScreen: false, 
       inlineHeight: Win.width / this.props.lockRatio,
       loading: false,
@@ -64,7 +64,8 @@ class AFVideo extends Component {
       progress: 0,
       currentTime: 0,
       seeking: false,
-      renderError: false
+      renderError: false,
+      rendered: false
     }
     this.animInline = new Animated.Value(Win.width / this.props.lockRatio)
     this.animFullscreen = new Animated.Value(Win.width / this.props.lockRatio)
@@ -96,7 +97,7 @@ class AFVideo extends Component {
       (Win.width / this.props.lockRatio)
       : (Win.width * ratio)
     this.setState({
-      paused: !this.props.autoPlay,
+      paused: false,
       loading: false,
       inlineHeight,
       duration: data.duration
@@ -212,7 +213,10 @@ class AFVideo extends Component {
   }
 
   togglePlay() {
-    this.setState({ paused: !this.state.paused, muted: !this.state.paused }, () => {
+    if (!this.state.rendered) {
+      this.setState({rendered: true}, () => this.setState({paused: false}))
+    } else { 
+    this.setState({ paused: !this.state.paused}, () => {
       this.props.onPlay(!this.state.paused)
       Orientation.getOrientation((e, orientation) => {
         if (this.props.inlineOnly) return
@@ -233,6 +237,7 @@ class AFVideo extends Component {
         }
       })
     })
+  }
   }
 
   toggleFS() {
@@ -380,7 +385,7 @@ class AFVideo extends Component {
           ((loading && placeholder) || currentTime < 0.01) &&
           <Image resizeMode="cover" style={styles.image} {...checkSource(placeholder)} />
         }
-        <Video
+        {this.state.rendered && <Video
           {...checkSource(url)}
           paused={paused}
           resizeMode={resizeMode}
@@ -401,7 +406,7 @@ class AFVideo extends Component {
           onError={e => this.onError(e)}
           // onBuffer={() => this.onBuffer()} // Callback when remote video is buffering
           onTimedMetadata={e => onTimedMetadata(e)} // Callback when the stream receive some metadata
-        />
+        />}
         <Controls
           ref={(ref) => { this.controls = ref }}
           toggleMute={() => this.toggleMute()}
