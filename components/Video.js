@@ -10,7 +10,7 @@ import {
   Image,
   Alert
 } from 'react-native'
-import VideoPlayer from 'react-native-video'
+import Video from 'react-native-video'
 import KeepAwake from 'react-native-keep-awake'
 import Orientation from 'react-native-orientation'
 import Icons from 'react-native-vector-icons/MaterialIcons'
@@ -51,12 +51,12 @@ const defaultTheme = {
   loading: '#FFF'
 }
 
-class Video extends Component {
+class AFVideo extends Component {
   constructor(props) {
     super(props)
     this.state = {
       paused: !props.autoPlay,
-      muted: false,
+      muted: true,
       fullScreen: false, 
       inlineHeight: Win.width / this.props.lockRatio,
       loading: false,
@@ -212,7 +212,7 @@ class Video extends Component {
   }
 
   togglePlay() {
-    this.setState({ paused: !this.state.paused }, () => {
+    this.setState({ paused: !this.state.paused, muted: !this.state.paused }, () => {
       this.props.onPlay(!this.state.paused)
       Orientation.getOrientation((e, orientation) => {
         if (this.props.inlineOnly) return
@@ -380,7 +380,7 @@ class Video extends Component {
           ((loading && placeholder) || currentTime < 0.01) &&
           <Image resizeMode="cover" style={styles.image} {...checkSource(placeholder)} />
         }
-        <VideoPlayer
+        <Video
           {...checkSource(url)}
           paused={paused}
           resizeMode={resizeMode}
@@ -390,6 +390,7 @@ class Video extends Component {
           rate={rate}
           volume={volume}
           muted={muted}
+          disableFocus={true}
           playInBackground={playInBackground} // Audio continues to play when app entering background.
           playWhenInactive={playWhenInactive} // [iOS] Video continues to play when control or notification center are shown.
           // progressUpdateInterval={250.0}          // [iOS] Interval to fire onProgress (default to ~250ms)
@@ -433,7 +434,7 @@ class Video extends Component {
   }
 }
 
-Video.propTypes = {
+AFVideo.propTypes = {
   url: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number
@@ -476,7 +477,7 @@ Video.propTypes = {
   noControls: PropTypes.bool
 }
 
-Video.defaultProps = {
+AFVideo.defaultProps = {
   placeholder: undefined,
   style: {},
   error: true,
@@ -506,4 +507,4 @@ Video.defaultProps = {
   noControls: false
 }
 
-export default Video
+export default AFVideo
