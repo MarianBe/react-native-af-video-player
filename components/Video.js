@@ -8,13 +8,14 @@ import {
   BackHandler,
   Animated,
   Image,
-  Alert
+  Alert,
+  View
 } from 'react-native'
 import Video from 'react-native-video'
 import KeepAwake from 'react-native-keep-awake'
 import Orientation from 'react-native-orientation'
 import Icons from 'react-native-vector-icons/MaterialIcons'
-import { Controls } from './'
+import { Controls, PlayButton } from './'
 import { checkSource } from './utils'
 const Win = Dimensions.get('window')
 const backgroundColor = '#000'
@@ -34,6 +35,10 @@ const styles = StyleSheet.create({
     width: undefined,
     height: undefined,
     zIndex: 99
+  },
+  container: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 99
   }
 })
 
@@ -50,7 +55,6 @@ const defaultTheme = {
   progress: '#FFF',
   loading: '#FFF'
 }
-
 class AFVideo extends Component {
   constructor(props) {
     super(props)
@@ -162,10 +166,12 @@ class AFVideo extends Component {
   }
 
   onSeekRelease(percent) {
-    const seconds = percent * this.state.duration
-    this.setState({ progress: percent, seeking: false }, () => {
-      this.player.seek(seconds)
-    })
+    if (this.state.rendered) {
+      const seconds = percent * this.state.duration
+      this.setState({ progress: percent, seeking: false }, () => {
+        this.player.seek(seconds)
+      })
+    }
   }
 
   onError(msg) {
@@ -285,8 +291,10 @@ class AFVideo extends Component {
   }
 
   seek(percent) {
-    const currentTime = percent * this.state.duration
-    this.setState({ seeking: true, currentTime })
+    if (this.state.rendered) {
+      const currentTime = percent * this.state.duration
+      this.setState({ seeking: true, currentTime })
+    }
   }
 
   seekTo(seconds) {
@@ -407,7 +415,7 @@ class AFVideo extends Component {
           // onBuffer={() => this.onBuffer()} // Callback when remote video is buffering
           onTimedMetadata={e => onTimedMetadata(e)} // Callback when the stream receive some metadata
         />}
-        <Controls
+        {this.state.rendered ? <Controls
           ref={(ref) => { this.controls = ref }}
           toggleMute={() => this.toggleMute()}
           toggleFS={() => this.toggleFS()}
@@ -428,7 +436,13 @@ class AFVideo extends Component {
           theme={setTheme}
           inlineOnly={inlineOnly}
           noControls={this.props.noControls}
-        />
+        /> : <View style={styles.container}>
+        <PlayButton
+        onPress={() => this.togglePlay()}
+        paused={true}
+        loading={false}
+        theme={setTheme.center} />
+        </View>}
       </Animated.View>
     )
   }
